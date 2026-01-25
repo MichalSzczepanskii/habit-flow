@@ -1,4 +1,4 @@
 @import 'tailwindcss';
-@import 'daisyui';
+@plugin 'daisyui';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
