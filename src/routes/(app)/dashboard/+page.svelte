@@ -1,17 +1,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { getLogicalDate, formatLogicalDate } from '$lib/utils/date';
-	import type { HabitWithStats } from '$lib/data-access/types';
+	import type { HabitWithStats, Habit } from '$lib/data-access/types';
 
 	import DateHeader from '$lib/components/dashboard/DateHeader.svelte';
 	import DailyProgressBar from '$lib/components/dashboard/DailyProgressBar.svelte';
 	import HabitList from '$lib/components/dashboard/HabitList.svelte';
 	import ClientDayTimer from '$lib/components/dashboard/ClientDayTimer.svelte';
+	import EmptyStateHero from '$lib/components/dashboard/EmptyStateHero.svelte';
+	import CreateHabitModal from '$lib/components/dashboard/CreateHabitModal.svelte';
 
 	// State
 	let habits = $state<HabitWithStats[]>([]);
 	let logicalDate = $state<Date>(getLogicalDate());
 	let isLoading = $state(true);
+	let isCreateModalOpen = $state(false);
 
 	// Derived
 	let dateString = $derived(formatLogicalDate(logicalDate));
@@ -44,6 +47,17 @@
 		logicalDate = getLogicalDate();
 	}
 
+	function handleAddHabit(newHabit: Habit) {
+		// Adapt the raw habit to the view model with default stats
+		const habitWithStats: HabitWithStats = {
+			...newHabit,
+			streak_current: 0,
+			completed_today: false
+		} as unknown as HabitWithStats;
+
+		habits = [...habits, habitWithStats];
+	}
+
 	// Effects
 	$effect(() => {
 		// Reactively fetch when dateString changes
@@ -68,8 +82,29 @@
 			<div class="h-24 w-full rounded-box bg-base-200"></div>
 			<div class="h-24 w-full rounded-box bg-base-200"></div>
 		</div>
+	{:else if habits.length === 0}
+		<EmptyStateHero onclick={() => (isCreateModalOpen = true)} />
 	{:else}
 		<DailyProgressBar total={progress.total} completed={progress.completed} />
 		<HabitList {habits} />
+		
+		<button
+			class="btn btn-outline btn-primary btn-block mt-4 border-2"
+			onclick={() => (isCreateModalOpen = true)}
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke-width="2"
+				stroke="currentColor"
+				class="size-5"
+			>
+				<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+			</svg>
+			Create new habit
+		</button>
 	{/if}
+
+	<CreateHabitModal bind:open={isCreateModalOpen} onSuccess={handleAddHabit} />
 </div>

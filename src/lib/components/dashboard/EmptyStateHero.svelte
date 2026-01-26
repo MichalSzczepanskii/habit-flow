@@ -1,5 +1,5 @@
 <script lang="ts">
-	// No logic needed, just presentation
+	let { onclick } = $props<{ onclick: () => void }>();
 </script>
 
 <div
@@ -22,5 +22,8 @@
 		</svg>
 	</div>
 	<h3 class="mb-3 text-2xl font-bold text-base-content">No habits found</h3>
-	<p class="max-w-xs text-base text-base-content/70">You don't have any habits for this day yet.</p>
+	<p class="mb-6 max-w-xs text-base text-base-content/70">
+		You don't have any habits for this day yet.
+	</p>
+	<button class="btn btn-primary" {onclick}> Add your first habit </button>
 </div>
