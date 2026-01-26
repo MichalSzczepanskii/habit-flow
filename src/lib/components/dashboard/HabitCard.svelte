@@ -7,7 +7,7 @@
 </script>
 
 <div
-	class="card-bordered card mb-4 w-full bg-base-100 shadow-sm transition-all duration-200 hover:border-primary/20 hover:shadow-md"
+	class="card card-bordered border-2 border-base-content/25 mb-4 w-full bg-base-100 shadow-sm transition-all duration-200 hover:border-primary/60 hover:shadow-md"
 	class:opacity-70={isCompleted}
 	class:bg-base-200={isCompleted}
 >
@@ -18,7 +18,7 @@
 			<div
 				class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-300 {isCompleted
 					? 'scale-105 border-primary bg-primary shadow-lg shadow-primary/30'
-					: 'border-base-content/20 hover:border-primary/50'}"
+					: 'border-base-content/50 hover:border-primary/50'}"
 			>
 				{#if isCompleted}
 					<svg
