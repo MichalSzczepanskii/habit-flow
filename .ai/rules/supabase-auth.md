@@ -1,9 +1,9 @@
-/*! 🌼 daisyUI 5.5.14*/
----
+## /_! 🌼 daisyUI 5.5.14_/
 
 description:
 globs:
 alwaysApply: false
+
 ---
 
 # Supabase Auth Integration with Astro
@@ -39,42 +39,42 @@ import { createServerClient, type CookieOptionsWithName } from '@supabase/ssr';
 import type { Database } from '../db/database.types.ts';
 
 export const cookieOptions: CookieOptionsWithName = {
- path: '/',
- secure: true,
- httpOnly: true,
- sameSite: 'lax'
+	path: '/',
+	secure: true,
+	httpOnly: true,
+	sameSite: 'lax'
 };
 
 function parseCookieHeader(cookieHeader: string): { name: string; value: string }[] {
- return cookieHeader.split(';').map((cookie) => {
-  const [name, ...rest] = cookie.trim().split('=');
-  return { name, value: rest.join('=') };
- });
+	return cookieHeader.split(';').map((cookie) => {
+		const [name, ...rest] = cookie.trim().split('=');
+		return { name, value: rest.join('=') };
+	});
 }
 
 export const createSupabaseServerInstance = (context: {
- headers: Headers;
- cookies: AstroCookies;
+	headers: Headers;
+	cookies: AstroCookies;
 }) => {
- const supabase = createServerClient<Database>(
-  import.meta.env.SUPABASE_URL,
-  import.meta.env.SUPABASE_KEY,
-  {
-   cookieOptions,
-   cookies: {
-    getAll() {
-     return parseCookieHeader(context.headers.get('Cookie') ?? '');
-    },
-    setAll(cookiesToSet) {
-     cookiesToSet.forEach(({ name, value, options }) =>
-      context.cookies.set(name, value, options)
-     );
-    }
-   }
-  }
- );
+	const supabase = createServerClient<Database>(
+		import.meta.env.SUPABASE_URL,
+		import.meta.env.SUPABASE_KEY,
+		{
+			cookieOptions,
+			cookies: {
+				getAll() {
+					return parseCookieHeader(context.headers.get('Cookie') ?? '');
+				},
+				setAll(cookiesToSet) {
+					cookiesToSet.forEach(({ name, value, options }) =>
+						context.cookies.set(name, value, options)
+					);
+				}
+			}
+		}
+	);
 
- return supabase;
+	return supabase;
 };
 ```
 
@@ -88,45 +88,45 @@ import { defineMiddleware } from 'astro:middleware';
 
 // Public paths - Auth API endpoints & Server-Rendered Astro Pages
 const PUBLIC_PATHS = [
- // Server-Rendered Astro Pages
- '/auth/login',
- '/auth/register',
- '/auth/reset-password',
- // Auth API endpoints
- '/api/auth/login',
- '/api/auth/register',
- '/api/auth/reset-password'
+	// Server-Rendered Astro Pages
+	'/auth/login',
+	'/auth/register',
+	'/auth/reset-password',
+	// Auth API endpoints
+	'/api/auth/login',
+	'/api/auth/register',
+	'/api/auth/reset-password'
 ];
 
 export const onRequest = defineMiddleware(
- async ({ locals, cookies, url, request, redirect }, next) => {
-  // Skip auth check for public paths
-  if (PUBLIC_PATHS.includes(url.pathname)) {
-   return next();
-  }
+	async ({ locals, cookies, url, request, redirect }, next) => {
+		// Skip auth check for public paths
+		if (PUBLIC_PATHS.includes(url.pathname)) {
+			return next();
+		}
 
-  const supabase = createSupabaseServerInstance({
-   cookies,
-   headers: request.headers
-  });
+		const supabase = createSupabaseServerInstance({
+			cookies,
+			headers: request.headers
+		});
 
-  // IMPORTANT: Always get user session first before any other operations
-  const {
-   data: { user }
-  } = await supabase.auth.getUser();
+		// IMPORTANT: Always get user session first before any other operations
+		const {
+			data: { user }
+		} = await supabase.auth.getUser();
 
-  if (user) {
-   locals.user = {
-    email: user.email,
-    id: user.id
-   };
-  } else if (!PUBLIC_PATHS.includes(url.pathname)) {
-   // Redirect to login for protected routes
-   return redirect('/auth/login');
-  }
+		if (user) {
+			locals.user = {
+				email: user.email,
+				id: user.id
+			};
+		} else if (!PUBLIC_PATHS.includes(url.pathname)) {
+			// Redirect to login for protected routes
+			return redirect('/auth/login');
+		}
 
-  return next();
- }
+		return next();
+	}
 );
 ```
 
@@ -140,61 +140,61 @@ import type { APIRoute } from 'astro';
 import { createSupabaseServerInstance } from '../../db/supabase.client.ts';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
- const { email, password } = await request.json();
+	const { email, password } = await request.json();
 
- const supabase = createSupabaseServerInstance({ cookies, headers: request.headers });
+	const supabase = createSupabaseServerInstance({ cookies, headers: request.headers });
 
- const { data, error } = await supabase.auth.signInWithPassword({
-  email,
-  password
- });
+	const { data, error } = await supabase.auth.signInWithPassword({
+		email,
+		password
+	});
 
- if (error) {
-  return new Response(JSON.stringify({ error: error.message }), {
-   status: 400
-  });
- }
+	if (error) {
+		return new Response(JSON.stringify({ error: error.message }), {
+			status: 400
+		});
+	}
 
- return new Response(JSON.stringify({ user: data.user }), {
-  status: 200
- });
+	return new Response(JSON.stringify({ user: data.user }), {
+		status: 200
+	});
 };
 
 // src/pages/api/auth/register.ts
 export const POST: APIRoute = async ({ request, cookies }) => {
- const { email, password } = await request.json();
+	const { email, password } = await request.json();
 
- const supabase = createSupabaseServerInstance({ cookies, headers: request.headers });
+	const supabase = createSupabaseServerInstance({ cookies, headers: request.headers });
 
- const { data, error } = await supabase.auth.signUp({
-  email,
-  password
- });
+	const { data, error } = await supabase.auth.signUp({
+		email,
+		password
+	});
 
- if (error) {
-  return new Response(JSON.stringify({ error: error.message }), {
-   status: 400
-  });
- }
+	if (error) {
+		return new Response(JSON.stringify({ error: error.message }), {
+			status: 400
+		});
+	}
 
- return new Response(JSON.stringify({ user: data.user }), {
-  status: 200
- });
+	return new Response(JSON.stringify({ user: data.user }), {
+		status: 200
+	});
 };
 
 // src/pages/api/auth/logout.ts
 export const POST: APIRoute = async ({ cookies, request }) => {
- const supabase = createSupabaseServerInstance({ cookies, headers: request.headers });
+	const supabase = createSupabaseServerInstance({ cookies, headers: request.headers });
 
- const { error } = await supabase.auth.signOut();
+	const { error } = await supabase.auth.signOut();
 
- if (error) {
-  return new Response(JSON.stringify({ error: error.message }), {
-   status: 400
-  });
- }
+	if (error) {
+		return new Response(JSON.stringify({ error: error.message }), {
+			status: 400
+		});
+	}
 
- return new Response(null, { status: 200 });
+	return new Response(null, { status: 200 });
 };
 ```
 

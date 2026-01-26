@@ -24,7 +24,8 @@ export type HabitCompletion = Tables<'habit_completions'>;
  * Represents a Habit with calculated statistics (Dashboard view).
  * Derived from the 'get_habits_with_stats' RPC function return type.
  */
-type GetHabitsWithStatsResponse = Database['public']['Functions']['get_habits_with_stats']['Returns'];
+type GetHabitsWithStatsResponse =
+	Database['public']['Functions']['get_habits_with_stats']['Returns'];
 export type HabitWithStats = GetHabitsWithStatsResponse extends (infer U)[] ? U : never;
 
 /**
@@ -52,4 +53,7 @@ export type UpdateHabitCommand = Pick<TablesUpdate<'habits'>, 'title'>;
  * Payload for marking a habit as complete.
  * API Endpoint: POST /rest/v1/habit_completions
  */
-export type MarkHabitCompleteCommand = Pick<TablesInsert<'habit_completions'>, 'habit_id' | 'completed_date'>;
+export type MarkHabitCompleteCommand = Pick<
+	TablesInsert<'habit_completions'>,
+	'habit_id' | 'completed_date'
+>;

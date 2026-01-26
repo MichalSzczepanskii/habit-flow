@@ -36,7 +36,7 @@ This endpoint allows an authenticated user to create a new habit definition by p
 
   ```json
   {
-   "title": "Read 10 pages"
+  	"title": "Read 10 pages"
   }
   ```
 
@@ -56,11 +56,11 @@ From `@src/lib/data-access/types.ts`:
 
   ```json
   {
-   "id": "...",
-   "user_id": "...",
-   "title": "Read 10 pages",
-   "created_at": "...",
-   "updated_at": "..."
+  	"id": "...",
+  	"user_id": "...",
+  	"title": "Read 10 pages",
+  	"created_at": "...",
+  	"updated_at": "..."
   }
   ```
 
@@ -106,17 +106,17 @@ From `@src/lib/data-access/types.ts`:
 1. **Create File**: Create `src/routes/rest/v1/habits/+server.ts`.
 2. **Define POST Handler**: Export a `POST` function satisfying the `RequestHandler` interface.
 3. **Auth Check**:
-    - Destructure `safeGetSession` from `locals`.
-    - Await session retrieval.
-    - If no session, return `json({ error: 'Unauthorized' }, { status: 401 })`.
+   - Destructure `safeGetSession` from `locals`.
+   - Await session retrieval.
+   - If no session, return `json({ error: 'Unauthorized' }, { status: 401 })`.
 4. **Parse & Validate Input**:
-    - Await `request.json()`.
-    - Check if `title` exists and is a string.
-    - If invalid, return `json({ error: 'Invalid input' }, { status: 400 })`.
+   - Await `request.json()`.
+   - Check if `title` exists and is a string.
+   - If invalid, return `json({ error: 'Invalid input' }, { status: 400 })`.
 5. **Perform Insert**:
-    - Use `locals.supabase.from('habits')`.
-    - Insert `{ title, user_id: session.user.id }`.
-    - Chain `.select().single()`.
+   - Use `locals.supabase.from('habits')`.
+   - Insert `{ title, user_id: session.user.id }`.
+   - Chain `.select().single()`.
 6. **Handle DB Result**:
-    - If `error`, log it and return 500.
-    - If `data`, return `json(data, { status: 201 })`.
+   - If `error`, log it and return 500.
+   - If `data`, return `json(data, { status: 201 })`.

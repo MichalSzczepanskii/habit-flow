@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { formatDateForDisplay, getDateLabel } from '$lib/utils/date';
+	import { formatDateForDisplay, getDateLabel } from '$lib/utils/date';
 
-  let { date }: { date: Date } = $props();
+	let { date }: { date: Date } = $props();
 </script>
 
-<div class="mb-8 mt-2">
-  <h1 class="text-4xl font-extrabold text-base-content tracking-tight">{getDateLabel(date)}</h1>
-  <p class="text-lg text-base-content/60 font-medium mt-1">{formatDateForDisplay(date)}</p>
+<div class="mt-2 mb-8">
+	<h1 class="text-4xl font-extrabold tracking-tight text-base-content">{getDateLabel(date)}</h1>
+	<p class="mt-1 text-lg font-medium text-base-content/60">{formatDateForDisplay(date)}</p>
 </div>

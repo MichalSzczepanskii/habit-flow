@@ -1,4 +1,5 @@
 <architecture_analysis>
+
 1. **Komponenty z plików referencyjnych**:
    - Layouty: `Root Layout`, `Auth Layout`, `App Layout`
    - Strony Autentykacji: `Login Page`, `Register Page`, `Forgot Password Page`
@@ -25,21 +26,21 @@
    - **App Layout**: Chroni dostęp do tras (przekierowanie przy braku sesji) i wyświetla główne menu.
    - **Form Actions**: Obsługują logikę biznesową logowania, rejestracji i zarządzania kontem po stronie serwera.
    - **Supabase Auth**: Zarządza użytkownikami, sesjami i tokenami JWT.
-</architecture_analysis>
+     </architecture_analysis>
 
 <mermaid_diagram>
 mermaid
 flowchart TD
-    %% Zewnętrzne systemy
-    subgraph External["Zewnętrzne Usługi"]
-        SupabaseAuth[("Supabase Auth API")]
-        SupabaseDB[("Supabase Database")]
-    end
+%% Zewnętrzne systemy
+subgraph External["Zewnętrzne Usługi"]
+SupabaseAuth[("Supabase Auth API")]
+SupabaseDB[("Supabase Database")]
+end
 
     %% Warstwa Klienta - Router SvelteKit
     subgraph ClientRouter["Router SvelteKit (Client)"]
         direction TB
-        
+
         %% Grupa Publiczna
         subgraph PublicRoutes["Trasy Publiczne (auth)"]
             AuthLayout["(auth)/+layout.svelte\n[Layout Autentykacji]"]
@@ -59,11 +60,11 @@ flowchart TD
     %% Warstwa Serwera - Logika i Ochrona
     subgraph ServerLayer["Warstwa Serwera (SvelteKit)"]
         direction TB
-        
+
         %% Hooks i Ochrona
         Hooks["hooks.server.ts\n[Zarządzanie Sesją]"]
         AppGuard["(app)/+layout.server.ts\n[Strażnik Sesji - Load]"]
-        
+
         %% Akcje Formularzy
         subgraph AuthActions["Akcje Formularzy (Actions)"]
             LoginAction[[Akcja: login]]
@@ -72,7 +73,7 @@ flowchart TD
             UpdatePasswordAction[[Akcja: update_password]]
             DeleteAccountAction[[Akcja: delete_account]]
         end
-        
+
         CallbackRoute["auth/callback/+server.ts\n[Obsługa Linków Magic/Reset]"]
     end
 
@@ -82,7 +83,7 @@ flowchart TD
     AuthLayout --> LoginPage
     AuthLayout --> RegisterPage
     AuthLayout --> ForgotPage
-    
+
     AppLayout --> DashboardPage
     AppLayout --> SettingsPage
 
@@ -127,4 +128,5 @@ flowchart TD
     class Hooks,AppGuard,CallbackRoute server;
     class SupabaseAuth,SupabaseDB external;
     class LoginAction,RegisterAction,LogoutAction,UpdatePasswordAction,DeleteAccountAction action;
+
 </mermaid_diagram>

@@ -1,13 +1,16 @@
 # View Implementation Plan `Dashboard View` (List Only)
 
 ## 1. Overview
+
 The Dashboard View is the core interface of HabitFlow. This implementation phase focuses solely on **displaying the list of habits** for the current "Logical Date". It handles data fetching, completion streak display, and visual progress tracking in a read-only manner (no creation, editing, or completion toggling in this step).
 
 ## 2. View Routing
+
 - **Route Path:** `/dashboard` (served via `src/routes/(app)/dashboard/+page.svelte`)
 - **Parent Layout:** `src/routes/(app)/+layout.svelte` (Provides the Top Navigation).
 
 ## 3. Component Structure
+
 The view is composed of the following hierarchy:
 
 ```
@@ -25,43 +28,50 @@ Dashboard (+page.svelte)
 ## 4. Component Details
 
 ### `Dashboard` (Page Controller)
+
 - **Description:** The orchestrator component. It calculates the `logicalDate` and fetches habit data.
 - **Main Elements:** Container `div` with responsive padding.
 - **Handled Interactions:**
-    - `onMount`: Calculates initial logical date and fetches habits.
-    - Auto-refresh when `ClientDayTimer` signals a day change.
+  - `onMount`: Calculates initial logical date and fetches habits.
+  - Auto-refresh when `ClientDayTimer` signals a day change.
 - **Types:** `HabitWithStats[]`.
 
 ### `DateHeader`
+
 - **Description:** Displays the current logical date to reassure users about the 3 AM rule.
 - **Main Elements:** `h1` for "Today/Yesterday", `p` for full date (e.g., "Mon, Jan 25").
 - **Props:** `date: Date`.
 
 ### `DailyProgressBar`
+
 - **Description:** A visual progress bar showing daily completion statistics.
 - **Main Elements:** `progress` element (DaisyUI), text label for percentage.
 - **Props:** `total: number`, `completed: number`.
 - **Logic:** Calculates percentage (`(completed / total) * 100`).
 
 ### `HabitList`
+
 - **Description:** A vertical stack container for habits.
 - **Main Elements:** `ul` or `div` flex-col.
 - **Props:** `habits: HabitWithStats[]`.
 
 ### `HabitCard`
+
 - **Description:** Displays a single habit's status.
 - **Main Elements:**
-    - **Visual Status:** Distinct styles for completed vs. incomplete (e.g., dim vs. bright, checkmark icon presence).
-    - **Content:** Habit Title, Streak Badge (Fire icon + count).
+  - **Visual Status:** Distinct styles for completed vs. incomplete (e.g., dim vs. bright, checkmark icon presence).
+  - **Content:** Habit Title, Streak Badge (Fire icon + count).
 - **Props:** `habit: HabitWithStats`.
 - **Events:** None (Read-only for this phase).
 
 ### `EmptyStateHero`
+
 - **Description:** Illustration and text shown when the habit list is empty.
 - **Main Elements:** SVG Illustration, "No habits found" text.
 - **Events:** None.
 
 ### `ClientDayTimer`
+
 - **Description:** A renderless component (or logic hook) that monitors the system time.
 - **Logic:** Checks every minute. If the "logical date" (date adjusted for 3 AM) changes, it emits a signal to refresh the data.
 
@@ -70,14 +80,16 @@ Dashboard (+page.svelte)
 The view relies on types defined in `src/lib/data-access/types.ts`.
 
 ### **ViewModel: `HabitWithStats`**
+
 Used for rendering the list.
+
 ```typescript
 {
-  id: string;
-  title: string;
-  created_at: string;
-  streak_count: number;     // Current streak
-  completed_today: boolean; // Computed for target_date
+	id: string;
+	title: string;
+	created_at: string;
+	streak_count: number; // Current streak
+	completed_today: boolean; // Computed for target_date
 }
 ```
 
@@ -89,13 +101,14 @@ State will be managed using **Svelte 5 Runes** within `+page.svelte`:
 - **`logicalDate`**: `$state<string>` - The current date string (YYYY-MM-DD) calculated by the client.
 - **`isLoading`**: `$state<boolean>(true)` - Controls Skeleton visibility.
 - **Derived State**:
-    - **`progress`**: `$derived(...)` - Calculates `{ total, completed, percent }` based on `habits`.
+  - **`progress`**: `$derived(...)` - Calculates `{ total, completed, percent }` based on `habits`.
 
 ## 7. API Integration
 
 The view interacts with `src/routes/rest/v1/habits/+server.ts`.
 
 ### **Fetch Habits**
+
 - **Request:** `GET /rest/v1/habits?target_date={logicalDate}`
 - **Response:** `200 OK` with `HabitWithStats[]`.
 
