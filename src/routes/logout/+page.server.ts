@@ -2,8 +2,8 @@ import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
 export const actions = {
-	default: async () => {
-		// TODO: locals.supabase.auth.signOut();
+	default: async ({ locals }) => {
+		await locals.supabase.auth.signOut();
 		throw redirect(303, '/login');
 	}
 } satisfies Actions;

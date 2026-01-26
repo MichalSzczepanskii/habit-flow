@@ -1,5 +1,5 @@
 <script lang="ts">
-	let { children } = $props();
+	let { children, data } = $props();
 </script>
 
 <div class="drawer">
@@ -41,7 +41,10 @@
 				Habit Flow
 			</div>
 			<div class="hidden flex-none lg:block">
-				<ul class="menu menu-horizontal">
+				<ul class="menu menu-horizontal items-center">
+					{#if data.user}
+						<li class="px-4 text-sm opacity-70">{data.user.email}</li>
+					{/if}
 					<!-- Navbar menu content here -->
 					<li><a href="/dashboard">Dashboard</a></li>
 					<li><a href="/settings">Settings</a></li>
@@ -59,6 +62,9 @@
 	<div class="drawer-side z-50">
 		<label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
 		<ul class="menu min-h-full w-80 bg-base-200 p-4">
+			{#if data.user}
+				<li class="menu-title px-4">{data.user.email}</li>
+			{/if}
 			<!-- Sidebar content here -->
 			<li><a href="/dashboard">Dashboard</a></li>
 			<li><a href="/settings">Settings</a></li>
