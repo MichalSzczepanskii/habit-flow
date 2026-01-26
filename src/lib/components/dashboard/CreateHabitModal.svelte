@@ -65,20 +65,20 @@
 	onclose={handleClose}
 	oncancel={handleClose}
 >
-	<div class="modal-box relative">
+	<div class="relative modal-box">
 		<button
-			class="btn btn-circle btn-ghost btn-sm absolute right-2 top-2"
+			class="btn absolute top-2 right-2 btn-circle btn-ghost btn-sm"
 			onclick={handleClose}
 			aria-label="Close"
 		>
 			✕
 		</button>
-		
-		<h3 class="font-bold text-lg">Create New Habit</h3>
-		<p class="py-2 text-base-content/70 text-sm">
+
+		<h3 class="text-lg font-bold">Create New Habit</h3>
+		<p class="py-2 text-sm text-base-content/70">
 			Start small. Consistent daily actions lead to big changes.
 		</p>
-		
+
 		<form onsubmit={handleSubmit} class="mt-2 flex flex-col gap-4">
 			<div class="form-control w-full">
 				<label class="label" for="habit-title">
@@ -88,7 +88,7 @@
 					id="habit-title"
 					type="text"
 					placeholder="e.g., Drink 2L water"
-					class="input input-bordered input-primary w-full"
+					class="input-bordered input w-full input-primary"
 					bind:value={title}
 					disabled={isLoading}
 				/>
@@ -100,21 +100,16 @@
 			</div>
 
 			<div class="modal-action">
-				<button
-					type="button"
-					class="btn btn-ghost"
-					onclick={handleClose}
-					disabled={isLoading}
-				>
+				<button type="button" class="btn btn-ghost" onclick={handleClose} disabled={isLoading}>
 					Cancel
 				</button>
 				<button
 					type="submit"
-					class="btn btn-primary min-w-[100px]"
+					class="btn min-w-[100px] btn-primary"
 					disabled={isLoading || !title.trim()}
 				>
 					{#if isLoading}
-						<span class="loading loading-spinner loading-sm"></span>
+						<span class="loading loading-sm loading-spinner"></span>
 					{:else}
 						Save
 					{/if}

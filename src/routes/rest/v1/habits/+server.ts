@@ -1,6 +1,10 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from '@sveltejs/kit';
-import type { CreateHabitCommand, HabitWithStats } from '$lib/data-access/types';
+import type {
+	CreateHabitCommand,
+	HabitWithStats,
+	UpdateHabitCommand
+} from '$lib/data-access/types';
 
 /**
  * GET /rest/v1/habits
@@ -126,4 +130,94 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	// 5. Success Response
 	return json(data, { status: 201 });
+};
+
+/**
+ * PATCH /rest/v1/habits?id=eq.{id}
+ *
+ * Updates an existing habit's title.
+ *
+ * Request Body:
+ * {
+ *   "title": "New Habit Title"
+ * }
+ *
+ * Query Parameters:
+ * - id: string (UUID) - Required. Format: 'eq.{uuid}' or just '{uuid}'.
+ *
+ * Response:
+ * - 200 OK: The updated habit object.
+ * - 400 Bad Request: Invalid ID or title.
+ * - 401 Unauthorized: User is not logged in.
+ * - 404 Not Found: Habit does not exist or user is not the owner.
+ * - 500 Internal Server Error: Database failure.
+ */
+export const PATCH: RequestHandler = async ({ url, request, locals }) => {
+	// 1. Authentication Check
+	const { session } = await locals.safeGetSession();
+
+	if (!session) {
+		return json({ error: 'Unauthorized' }, { status: 401 });
+	}
+
+	// 2. Extract and Validate ID
+	const idParam = url.searchParams.get('id');
+
+	if (!idParam) {
+		return json({ error: 'Missing id parameter' }, { status: 400 });
+	}
+
+	// Strip "eq." prefix if present
+	let id = idParam;
+	if (id.startsWith('eq.')) {
+		id = id.slice(3);
+	}
+
+	// Validate UUID format
+	const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+	if (!uuidRegex.test(id)) {
+		return json({ error: 'Invalid ID format' }, { status: 400 });
+	}
+
+	// 3. Parse and Validate Body
+	let body: UpdateHabitCommand;
+	try {
+		body = await request.json();
+	} catch {
+		return json({ error: 'Invalid JSON body' }, { status: 400 });
+	}
+
+	const { title } = body;
+
+	// Validate title
+	if (!title || typeof title !== 'string' || title.trim().length === 0) {
+		return json({ error: 'Title is required' }, { status: 400 });
+	}
+	if (title.length > 255) {
+		return json({ error: 'Title must be 255 characters or less' }, { status: 400 });
+	}
+
+	// 4. Execute Update
+	// RLS ensures users can only update their own habits
+	const { data, error } = await locals.supabase
+		.from('habits')
+		.update({ title: title.trim() })
+		.eq('id', id)
+		.select()
+		.single();
+
+	// 5. Handle Errors
+	if (error) {
+		// PGRST116: JSON object requested, multiple (or no) rows returned
+		// In this context (update .eq().single()), it implies no row was found/updated.
+		if (error.code === 'PGRST116') {
+			return json({ error: 'Habit not found or not owned by user' }, { status: 404 });
+		}
+
+		console.error('Error updating habit:', error);
+		return json({ error: 'Internal Server Error' }, { status: 500 });
+	}
+
+	// 6. Success Response
+	return json(data);
 };
