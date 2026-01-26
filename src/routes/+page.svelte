@@ -3,5 +3,5 @@
 </script>
 
 <div class="flex h-screen items-center justify-center">
-	<span class="loading loading-spinner loading-lg text-primary"></span>
+	<span class="loading loading-lg loading-spinner text-primary"></span>
 </div>

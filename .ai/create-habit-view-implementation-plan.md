@@ -104,17 +104,17 @@ State will be managed using Svelte 5 Runes:
 2. **Open:** Modal appears; background dims; focus lands on the input field.
 3. **Input:** User types a title (e.g., "Drink Water").
 4. **Action (Save):**
-    - User clicks "Save" or presses "Enter".
-    - Input is disabled; Save button shows loading spinner.
-    - API request is sent.
+   - User clicks "Save" or presses "Enter".
+   - Input is disabled; Save button shows loading spinner.
+   - API request is sent.
 5. **Success:**
-    - Modal closes.
-    - Notification/Toast (optional, but good UX) appears.
-    - The new habit appears at the bottom (or top) of the habit list.
-    - Empty state disappears (if it was visible).
+   - Modal closes.
+   - Notification/Toast (optional, but good UX) appears.
+   - The new habit appears at the bottom (or top) of the habit list.
+   - Empty state disappears (if it was visible).
 6. **Action (Cancel):**
-    - User clicks "Cancel" or outside the modal.
-    - Modal closes; input is cleared.
+   - User clicks "Cancel" or outside the modal.
+   - Modal closes; input is cleared.
 
 ## 9. Conditions and Validation
 
@@ -130,23 +130,23 @@ State will be managed using Svelte 5 Runes:
 ## 11. Implementation Steps
 
 1. **Create `CreateHabitModal.svelte`**:
-    - Scaffold the component using `<dialog>` and DaisyUI classes.
-    - Implement the `title` input and button layout.
-    - Add the `saveHabit` logic with `fetch` call.
-    - Implement `onSuccess` callback execution and form reset.
+   - Scaffold the component using `<dialog>` and DaisyUI classes.
+   - Implement the `title` input and button layout.
+   - Add the `saveHabit` logic with `fetch` call.
+   - Implement `onSuccess` callback execution and form reset.
 
 2. **Update `Dashboard` Page (`+page.svelte`)**:
-    - Create a reactive state for `habits` initialized from `data.habits`.
-    - Create `isCreateModalOpen` state.
-    - Import `CreateHabitModal` and place it at the bottom of the markup.
-    - Implement `handleHabitCreated` function to adapt the new `Habit` to `HabitWithStats` and push to the list.
+   - Create a reactive state for `habits` initialized from `data.habits`.
+   - Create `isCreateModalOpen` state.
+   - Import `CreateHabitModal` and place it at the bottom of the markup.
+   - Implement `handleHabitCreated` function to adapt the new `Habit` to `HabitWithStats` and push to the list.
 
 3. **Implement Triggers**:
-    - Add a Floating Action Button (FAB) to the Dashboard (bottom-right fixed, visible on mobile/desktop).
-    - Update `EmptyStateHero` (or its usage in Dashboard) to accept an `onclick` handler that sets `isCreateModalOpen = true`.
+   - Add a Floating Action Button (FAB) to the Dashboard (bottom-right fixed, visible on mobile/desktop).
+   - Update `EmptyStateHero` (or its usage in Dashboard) to accept an `onclick` handler that sets `isCreateModalOpen = true`.
 
 4. **Verify & Test**:
-    - Test opening/closing.
-    - Test validation (empty title).
-    - Test successful creation and list update.
-    - Test persistence (refresh page to ensure server data matches).
+   - Test opening/closing.
+   - Test validation (empty title).
+   - Test successful creation and list update.
+   - Test persistence (refresh page to ensure server data matches).

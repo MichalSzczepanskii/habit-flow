@@ -87,9 +87,9 @@
 	{:else}
 		<DailyProgressBar total={progress.total} completed={progress.completed} />
 		<HabitList {habits} />
-		
+
 		<button
-			class="btn btn-outline btn-primary btn-block mt-4 border-2"
+			class="btn mt-4 btn-block border-2 btn-outline btn-primary"
 			onclick={() => (isCreateModalOpen = true)}
 		>
 			<svg
