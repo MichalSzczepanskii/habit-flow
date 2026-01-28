@@ -3,7 +3,10 @@
 	import HabitCard from './HabitCard.svelte';
 	import EditHabitModal from './EditHabitModal.svelte';
 
-	let { habits }: { habits: HabitWithStats[] } = $props();
+	let {
+		habits,
+		onDeleteHabit
+	}: { habits: HabitWithStats[]; onDeleteHabit?: (id: string) => void } = $props();
 
 	let editingHabit = $state<{ id: string; title: string } | null>(null);
 	let isEditModalOpen = $state(false);
@@ -45,7 +48,7 @@
 <div class="flex w-full flex-col pb-20">
 	<!-- pb-20 for bottom nav if exists -->
 	{#each habits as habit (habit.id)}
-		<HabitCard {habit} onedit={openEditModal} />
+		<HabitCard {habit} onedit={openEditModal} ondelete={onDeleteHabit} />
 	{/each}
 </div>
 

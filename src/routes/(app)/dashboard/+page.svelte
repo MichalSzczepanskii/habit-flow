@@ -9,12 +9,17 @@
 	import ClientDayTimer from '$lib/components/dashboard/ClientDayTimer.svelte';
 	import EmptyStateHero from '$lib/components/dashboard/EmptyStateHero.svelte';
 	import CreateHabitModal from '$lib/components/dashboard/CreateHabitModal.svelte';
+	import DeleteHabitModal from '$lib/components/dashboard/DeleteHabitModal.svelte';
 
 	// State
 	let habits = $state<HabitWithStats[]>([]);
 	let logicalDate = $state<Date>(getLogicalDate());
 	let isLoading = $state(true);
 	let isCreateModalOpen = $state(false);
+
+	// Delete State
+	let showDeleteModal = $state(false);
+	let habitToDelete = $state<HabitWithStats | null>(null);
 
 	// Derived
 	let dateString = $derived(formatLogicalDate(logicalDate));
@@ -58,6 +63,37 @@
 		habits = [...habits, habitWithStats];
 	}
 
+	function openDeleteModal(id: string) {
+		const habit = habits.find((h) => h.id === id);
+		if (habit) {
+			habitToDelete = habit;
+			showDeleteModal = true;
+		}
+	}
+
+	async function handleDelete() {
+		if (!habitToDelete) return;
+
+		try {
+			const response = await fetch(`/rest/v1/habits?id=eq.${habitToDelete.id}`, {
+				method: 'DELETE'
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to delete habit');
+			}
+
+			// Optimistic update
+			habits = habits.filter((h) => h.id !== habitToDelete?.id);
+			showDeleteModal = false;
+			habitToDelete = null;
+		} catch (e) {
+			console.error('Error deleting habit', e);
+			// In a real app, show toast
+			alert('Failed to delete habit. Please try again.');
+		}
+	}
+
 	// Effects
 	$effect(() => {
 		// Reactively fetch when dateString changes
@@ -86,7 +122,7 @@
 		<EmptyStateHero onclick={() => (isCreateModalOpen = true)} />
 	{:else}
 		<DailyProgressBar total={progress.total} completed={progress.completed} />
-		<HabitList {habits} />
+		<HabitList {habits} onDeleteHabit={openDeleteModal} />
 
 		<button
 			class="btn mt-4 btn-block border-2 btn-outline btn-primary"
@@ -107,4 +143,9 @@
 	{/if}
 
 	<CreateHabitModal bind:open={isCreateModalOpen} onSuccess={handleAddHabit} />
+	<DeleteHabitModal
+		bind:isOpen={showDeleteModal}
+		habitTitle={habitToDelete?.title ?? ''}
+		onConfirm={handleDelete}
+	/>
 </div>
