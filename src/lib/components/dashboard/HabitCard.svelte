@@ -3,50 +3,78 @@
 
 	let {
 		habit,
+		onToggle,
 		onedit,
 		ondelete
 	}: {
 		habit: HabitWithStats;
+		onToggle: (habitId: string) => Promise<void>;
 		onedit?: (habit: HabitWithStats) => void;
 		ondelete?: (id: string) => void;
 	} = $props();
 
 	let isCompleted = $derived(habit.completed_today);
+	let isToggling = $state(false);
+
+	async function handleToggle() {
+		if (isToggling) return;
+		isToggling = true;
+		try {
+			await onToggle(habit.id);
+		} finally {
+			isToggling = false;
+		}
+	}
 </script>
 
 <div
-	class="card-bordered card mb-4 w-full border-2 border-base-content/25 bg-base-100 shadow-sm transition-all duration-200 hover:border-primary/60 hover:shadow-md"
-	class:opacity-70={isCompleted}
-	class:bg-base-200={isCompleted}
+	class="card-bordered card mb-4 w-full border-0 shadow-sm transition-colors duration-300"
+	class:bg-emerald-500={isCompleted}
+	class:text-white={isCompleted}
+	class:bg-base-200={!isCompleted}
+	class:text-base-content={!isCompleted}
 >
 	<div class="card-body flex-row items-center justify-between p-6">
 		<!-- Left: Status Icon & Title -->
 		<div class="flex items-center gap-5 overflow-hidden">
-			<!-- Checkbox visual (Read-only) -->
-			<div
-				class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-300 {isCompleted
-					? 'scale-105 border-primary bg-primary shadow-lg shadow-primary/30'
-					: 'border-base-content/50 hover:border-primary/50'}"
+			<!-- Checkbox/Action Button -->
+			<button
+				class="btn btn-circle border-2 transition-all duration-300 btn-lg hover:scale-105"
+				class:btn-ghost={!isCompleted}
+				class:bg-white={isCompleted}
+				class:text-emerald-500={isCompleted}
+				class:border-white={isCompleted}
+				class:border-base-content={!isCompleted && !isToggling}
+				class:border-opacity-20={!isCompleted}
+				onclick={handleToggle}
+				disabled={isToggling}
+				aria-label={isCompleted
+					? `Mark ${habit.title} as incomplete`
+					: `Mark ${habit.title} as complete`}
 			>
-				{#if isCompleted}
+				{#if isToggling}
+					<span class="loading loading-md loading-spinner"></span>
+				{:else if isCompleted}
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke-width="3"
 						stroke="currentColor"
-						class="size-6 text-primary-content"
+						class="size-6"
 					>
 						<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
 					</svg>
+				{:else}
+					<!-- Empty circle effect created by button border -->
 				{/if}
-			</div>
+			</button>
 
 			<!-- Title -->
 			<h3
-				class="truncate text-xl font-semibold transition-colors {isCompleted
-					? 'text-base-content/50 line-through'
-					: 'text-base-content'}"
+				class="truncate text-xl font-semibold transition-colors"
+				class:line-through={isCompleted}
+				class:opacity-90={isCompleted}
 			>
 				{habit.title}
 			</h3>
@@ -56,7 +84,10 @@
 		<div class="flex items-center gap-2">
 			{#if habit.streak_count > 0}
 				<div
-					class="badge gap-1.5 border-0 bg-orange-100 py-4 badge-lg text-orange-600 dark:bg-orange-900/30 dark:text-orange-400"
+					class="badge gap-1.5 border-0 py-4 badge-lg font-bold"
+					class:bg-white={isCompleted}
+					class:text-emerald-600={isCompleted}
+					class:bg-base-300={!isCompleted}
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +101,7 @@
 							clip-rule="evenodd"
 						/>
 					</svg>
-					<span class="text-base font-bold">{habit.streak_count}</span>
+					{habit.streak_count}
 				</div>
 			{/if}
 
@@ -79,6 +110,9 @@
 					tabindex="0"
 					role="button"
 					class="btn btn-circle btn-ghost btn-sm"
+					class:text-white={isCompleted}
+					class:hover:bg-white={isCompleted}
+					class:hover:bg-opacity-20={isCompleted}
 					aria-label="Habit options"
 				>
 					<svg
@@ -99,7 +133,7 @@
 				<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 				<ul
 					tabindex="0"
-					class="dropdown-content menu z-[1] w-52 rounded-box border border-base-content/25 bg-base-100 p-2 shadow-xl"
+					class="dropdown-content menu z-[1] w-52 rounded-box border border-base-content/25 bg-base-100 p-2 text-base-content shadow-xl"
 				>
 					<li>
 						<button onclick={() => onedit?.(habit)}>

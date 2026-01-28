@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { getLogicalDate, formatLogicalDate } from '$lib/utils/date';
 	import type { HabitWithStats, Habit } from '$lib/data-access/types';
 
@@ -47,7 +46,7 @@
 		}
 	}
 
-	function handleDateChange(newDateString: string) {
+	function handleDateChange() {
 		// Update logical date to trigger re-fetch and UI update
 		logicalDate = getLogicalDate();
 	}
@@ -56,7 +55,7 @@
 		// Adapt the raw habit to the view model with default stats
 		const habitWithStats: HabitWithStats = {
 			...newHabit,
-			streak_current: 0,
+			streak_count: 0,
 			completed_today: false
 		} as unknown as HabitWithStats;
 
@@ -94,6 +93,61 @@
 		}
 	}
 
+	async function handleToggleCompletion(id: string) {
+		const habit = habits.find((h) => h.id === id);
+		if (!habit) return;
+
+		const wasCompleted = habit.completed_today;
+		const method = wasCompleted ? 'DELETE' : 'POST';
+
+		try {
+			let url = '/rest/v1/habit_completions';
+			let body = undefined;
+			let headers = undefined;
+
+			if (method === 'POST') {
+				body = JSON.stringify({
+					habit_id: id,
+					completed_date: dateString
+				});
+				headers = { 'Content-Type': 'application/json' };
+			} else {
+				// DELETE requires query params
+				url += `?habit_id=${id}&completed_date=${dateString}`;
+			}
+
+			const response = await fetch(url, { method, headers, body });
+
+			if (response.ok || (method === 'POST' && response.status === 409)) {
+				// Success (or duplicate check-in, which we treat as success)
+				// Update state
+				habit.completed_today = !wasCompleted;
+
+				// Update streak
+				// If we just completed it: streak + 1
+				// If we just undid it: streak - 1
+				if (!wasCompleted) {
+					habit.streak_count += 1;
+				} else {
+					habit.streak_count = Math.max(0, habit.streak_count - 1);
+				}
+			} else {
+				// Handle 404 for undoing non-existent (treat as success? Plan says yes)
+				if (method === 'DELETE' && response.status === 404) {
+					habit.completed_today = false;
+					// Streak might already be correct if it wasn't counted, but decrementing safe if we thought it was done?
+					// If UI said done, streak included it. So decrement.
+					habit.streak_count = Math.max(0, habit.streak_count - 1);
+				} else {
+					throw new Error('Failed to update status');
+				}
+			}
+		} catch (error) {
+			console.error('Toggle error', error);
+			alert('Failed to update habit status. Please try again.');
+		}
+	}
+
 	// Effects
 	$effect(() => {
 		// Reactively fetch when dateString changes
@@ -122,7 +176,7 @@
 		<EmptyStateHero onclick={() => (isCreateModalOpen = true)} />
 	{:else}
 		<DailyProgressBar total={progress.total} completed={progress.completed} />
-		<HabitList {habits} onDeleteHabit={openDeleteModal} />
+		<HabitList {habits} onDeleteHabit={openDeleteModal} onToggleHabit={handleToggleCompletion} />
 
 		<button
 			class="btn mt-4 btn-block border-2 btn-outline btn-primary"
