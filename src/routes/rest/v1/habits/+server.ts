@@ -221,3 +221,64 @@ export const PATCH: RequestHandler = async ({ url, request, locals }) => {
 	// 6. Success Response
 	return json(data);
 };
+
+/**
+ * DELETE /rest/v1/habits
+ *
+ * Deletes a specific habit.
+ *
+ * Query Parameters:
+ * - id: string (UUID) - Required. Format: 'eq.{uuid}' or just '{uuid}'.
+ *
+ * Response:
+ * - 204 No Content: Habit successfully deleted.
+ * - 400 Bad Request: Missing or invalid ID.
+ * - 401 Unauthorized: User is not logged in.
+ * - 404 Not Found: Habit does not exist or user is not the owner.
+ * - 500 Internal Server Error: Database failure.
+ */
+export const DELETE: RequestHandler = async ({ url, locals }) => {
+	// 1. Authentication Check
+	const { session } = await locals.safeGetSession();
+
+	if (!session) {
+		return json({ error: 'Unauthorized' }, { status: 401 });
+	}
+
+	// 2. Extract and Validate ID
+	const idParam = url.searchParams.get('id');
+
+	if (!idParam) {
+		return json({ error: 'Missing id parameter' }, { status: 400 });
+	}
+
+	// Strip "eq." prefix if present
+	let id = idParam;
+	if (id.startsWith('eq.')) {
+		id = id.slice(3);
+	}
+
+	// Validate UUID format
+	const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+	if (!uuidRegex.test(id)) {
+		return json({ error: 'Invalid ID format' }, { status: 400 });
+	}
+
+	// 3. Execute Delete
+	const { error } = await locals.supabase.from('habits').delete().eq('id', id).select().single();
+
+	// 4. Handle Errors
+	if (error) {
+		// PGRST116: JSON object requested, multiple (or no) rows returned
+		// In this context (delete .eq().single()), it implies no row was found/deleted.
+		if (error.code === 'PGRST116') {
+			return json({ error: 'Habit not found or not owned by user' }, { status: 404 });
+		}
+
+		console.error('Error deleting habit:', error);
+		return json({ error: 'Internal Server Error' }, { status: 500 });
+	}
+
+	// 5. Success Response
+	return new Response(null, { status: 204 });
+};
