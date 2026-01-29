@@ -10,19 +10,39 @@
 	<h1 class="mb-6 text-2xl font-bold">Settings</h1>
 
 	{#if form?.message}
-		<div role="alert" class="mb-6 alert alert-info">
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				class="h-6 w-6 shrink-0 stroke-current"
-				><path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					stroke-width="2"
-					d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-				></path></svg
-			>
+		<div
+			role="alert"
+			class="mb-6 alert {form?.message === 'Password updated successfully.'
+				? 'alert-success'
+				: 'alert-error'}"
+		>
+			{#if form?.message === 'Password updated successfully.'}
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-6 w-6 shrink-0 stroke-current"
+					fill="none"
+					viewBox="0 0 24 24"
+					><path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+					/></svg
+				>
+			{:else}
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-6 w-6 shrink-0 stroke-current"
+					fill="none"
+					viewBox="0 0 24 24"
+					><path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+					/></svg
+				>
+			{/if}
 			<span>{form.message}</span>
 		</div>
 	{/if}
@@ -33,31 +53,69 @@
 			<form
 				method="POST"
 				action="?/updatePassword"
-				use:enhance={() => {
+				use:enhance={({ formElement }) => {
 					isLoading = true;
-					return async ({ update }) => {
+					return async ({ result, update }) => {
 						isLoading = false;
 						await update();
+						if (result.type === 'failure') {
+							formElement.reset();
+						}
 					};
 				}}
 				class="flex flex-col gap-4"
 			>
 				<div class="form-control">
-					<label class="label" for="password">
+					<label class="label" for="currentPassword">
+						<span class="label-text">Current Password</span>
+					</label>
+					<input
+						type="password"
+						name="currentPassword"
+						id="currentPassword"
+						placeholder="••••••••"
+						class="input-bordered input w-full input-primary"
+						required
+					/>
+				</div>
+
+				<div class="form-control">
+					<label class="label" for="newPassword">
 						<span class="label-text">New Password</span>
 					</label>
 					<input
 						type="password"
-						name="password"
-						id="password"
+						name="newPassword"
+						id="newPassword"
 						placeholder="••••••••"
-						class="input-bordered input input-primary"
+						class="input-bordered input w-full input-primary"
 						required
 						minlength="6"
 					/>
 				</div>
+
+				<div class="form-control">
+					<label class="label" for="confirmNewPassword">
+						<span class="label-text">Confirm New Password</span>
+					</label>
+					<input
+						type="password"
+						name="confirmNewPassword"
+						id="confirmNewPassword"
+						placeholder="••••••••"
+						class="input-bordered input w-full input-primary"
+						required
+						minlength="6"
+					/>
+				</div>
+
 				<div class="card-actions justify-end">
-					<button class="btn btn-primary" disabled={isLoading}>Update Password</button>
+					<button class="btn btn-primary" disabled={isLoading}>
+						{#if isLoading}
+							<span class="loading loading-spinner"></span>
+						{/if}
+						Update Password
+					</button>
 				</div>
 			</form>
 		</div>
