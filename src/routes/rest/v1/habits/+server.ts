@@ -81,16 +81,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
  */
 export const POST: RequestHandler = async ({ request, locals }) => {
 	// 1. Authentication Check (BYPASSED FOR TESTING)
-	// const { session, user } = await locals.safeGetSession();
+	const { session, user } = await locals.safeGetSession();
 
-	// if (!session || !user) {
-	//     return json({ error: 'Unauthorized' }, { status: 401 });
-	// }
-
-	// DEBUG: Default User ID for testing.
-	// WARNING: This user_id MUST exist in auth.users for the foreign key constraint.
-	// WARNING: RLS policies on the 'habits' table might block this insert if you are using the anon client.
-	const DEFAULT_USER_ID = '134c647c-f70b-4d2b-8838-ffb33b3a71de';
+	if (!session || !user) {
+		return json({ error: 'Unauthorized' }, { status: 401 });
+	}
 
 	// 2. Input Parsing and Validation
 	let body: CreateHabitCommand;
@@ -114,7 +109,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		.from('habits')
 		.insert({
 			title: title.trim(),
-			user_id: DEFAULT_USER_ID
+			user_id: user.id
 		})
 		.select()
 		.single();
