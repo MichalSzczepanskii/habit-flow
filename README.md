@@ -30,7 +30,7 @@ The application focuses on the core mechanics of habit formation—consistency a
 **Tooling & Quality**
 
 - **Build Tool:** [Vite](https://vitejs.dev/)
-- **Unit Testing:** [Vitest](https://vitest.dev/)
+- **Unit & Integration Testing:** [Vitest](https://vitest.dev/)
 - **E2E Testing:** [Playwright](https://playwright.dev/)
 - **Linting/Formatting:** ESLint, Prettier
 

@@ -3,5 +3,5 @@
 </script>
 
 <div class="flex h-screen items-center justify-center">
-	<span class="loading loading-lg loading-spinner text-primary"></span>
+	<span class="loading loading-lg loading-spinner text-primary" role="status" aria-label="Loading"></span>
 </div>

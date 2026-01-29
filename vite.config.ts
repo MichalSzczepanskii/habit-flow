@@ -15,6 +15,7 @@ export default defineConfig({
 
 				test: {
 					name: 'client',
+					setupFiles: ['src/vitest-setup.ts'],
 
 					browser: {
 						enabled: true,

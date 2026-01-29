@@ -10,6 +10,11 @@
 
 - Supabase
 
+## Testing
+
+- Vitest (Unit & Integration)
+- Playwright (E2E)
+
 ## CI/CD and Hosting
 
 - Github Actions
