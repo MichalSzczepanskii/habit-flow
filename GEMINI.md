@@ -45,3 +45,7 @@ After completing the code, ask the user if they want a playground link. Only cal
 ## Additional Rules
 
 - Never ignore lint failures; fix or justify exemptions.
+
+## Vitest with Playwright testing
+
+- The project uses a split Vitest configuration: 'client' (browser/playwright) for \*.svelte.spec.ts files and 'server' (node) for other .spec.ts files. Manual cleanup() is required for Svelte component tests in the browser environment.
