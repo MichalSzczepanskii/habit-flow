@@ -1,4 +1,4 @@
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { AuthApiError } from '@supabase/supabase-js';
 
@@ -52,8 +52,28 @@ export const actions = {
 
 		return { message: 'Password updated successfully.' };
 	},
-	deleteAccount: async () => {
-		// Backend logic will be implemented later.
-		return fail(501, { message: 'Delete account logic not yet implemented.' });
+
+	deleteAccount: async ({ locals }) => {
+		const { user } = await locals.safeGetSession();
+
+		if (!user) {
+			return fail(401, {
+				message: 'You must be logged in to delete your account.',
+				isDeleteAccountError: true
+			});
+		}
+
+		const { error } = await locals.supabase.rpc('delete_user');
+
+		if (error) {
+			console.error('Error deleting user:', error);
+			return fail(500, {
+				message: 'Failed to delete account. Please try again later.',
+				isDeleteAccountError: true
+			});
+		}
+
+		await locals.supabase.auth.signOut();
+		throw redirect(303, '/');
 	}
 } satisfies Actions;

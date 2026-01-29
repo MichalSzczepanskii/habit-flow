@@ -4,12 +4,20 @@
 
 	let { form } = $props<{ form: ActionData }>();
 	let isLoading = $state(false);
+	let isDeleting = $state(false);
+	let isDeleteModalOpen = $state(false);
+
+	function closeDeleteModal() {
+		if (!isDeleting) {
+			isDeleteModalOpen = false;
+		}
+	}
 </script>
 
 <div class="container mx-auto max-w-2xl px-4 py-8">
 	<h1 class="mb-6 text-2xl font-bold">Settings</h1>
 
-	{#if form?.message}
+	{#if form?.message && !form?.isDeleteAccountError}
 		<div
 			role="alert"
 			class="mb-6 alert {form?.message === 'Password updated successfully.'
@@ -144,23 +152,64 @@
 				Once you delete your account, there is no going back. Please be certain.
 			</p>
 
+			<div class="mt-4 card-actions justify-end">
+				<button class="btn btn-outline btn-error" onclick={() => (isDeleteModalOpen = true)}>
+					Delete Account
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<dialog class="modal modal-bottom sm:modal-middle" class:modal-open={isDeleteModalOpen}>
+	<div class="modal-box">
+		<h3 class="text-lg font-bold">Delete Account</h3>
+		<p class="py-4">
+			Are you sure you want to delete your account? This action <span class="font-bold"
+				>cannot be undone</span
+			>
+			and will permanently remove all your habits and streak history.
+		</p>
+		<div class="modal-action">
+			<form method="dialog" class="flex gap-2">
+				<button
+					class="btn btn-ghost"
+					type="button"
+					onclick={closeDeleteModal}
+					disabled={isDeleting}
+				>
+					Cancel
+				</button>
+			</form>
 			<form
 				method="POST"
 				action="?/deleteAccount"
 				use:enhance={() => {
+					isDeleting = true;
 					return async ({ update }) => {
-						if (
-							confirm('Are you sure you want to delete your account? This action cannot be undone.')
-						) {
-							await update();
-						}
+						isDeleting = false;
+						await update();
 					};
 				}}
 			>
-				<div class="mt-4 card-actions justify-end">
-					<button class="btn btn-outline btn-error">Delete Account</button>
-				</div>
+				<button class="btn text-error-content btn-error" disabled={isDeleting}>
+					{#if isDeleting}
+						<span class="loading loading-spinner"></span>
+					{/if}
+					Delete Account
+				</button>
 			</form>
 		</div>
 	</div>
-</div>
+	<form method="dialog" class="modal-backdrop">
+		<button onclick={closeDeleteModal} type="button" disabled={isDeleting}>close</button>
+	</form>
+</dialog>
+
+{#if form?.message && form?.isDeleteAccountError}
+	<div class="toast toast-end toast-bottom">
+		<div class="alert alert-error">
+			<span>{form.message}</span>
+		</div>
+	</div>
+{/if}
