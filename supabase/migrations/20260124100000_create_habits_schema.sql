@@ -20,7 +20,7 @@ comment on table public.habits is 'Stores the definition of habits created by us
 
 -- Trigger to automatically update updated_at timestamp
 create trigger handle_updated_at before update on public.habits
-  for each row execute procedure moddatetime (updated_at);
+  for each row execute procedure extensions.moddatetime (updated_at);
 
 
 -- 2. Create public.habit_completions table
