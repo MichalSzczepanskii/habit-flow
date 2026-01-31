@@ -1,13 +1,16 @@
 # View Implementation Plan - Delete Habit
 
 ## 1. Overview
+
 This plan outlines the implementation of the "Delete Habit" functionality. It involves creating a confirmation modal, updating the existing habit card to include a delete trigger (context menu), and integrating with the backend API to permanently remove the habit and its history.
 
 ## 2. View Routing
+
 - **Main View:** `/dashboard` (The dashboard displays the habit list where the delete action originates).
 - **API Endpoint:** `/rest/v1/habits` (DELETE method).
 
 ## 3. Component Structure
+
 The following structure highlights the new and modified components required for this feature:
 
 - `src/routes/(app)/dashboard/+page.svelte` (Parent / Orchestrator)
@@ -18,6 +21,7 @@ The following structure highlights the new and modified components required for 
 ## 4. Component Details
 
 ### `DeleteHabitModal.svelte` (New)
+
 - **Description:** A modal dialog that asks the user for confirmation before deleting a habit. It ensures the action is intentional.
 - **Main Elements:**
   - `dialog` element (DaisyUI Modal).
@@ -35,6 +39,7 @@ The following structure highlights the new and modified components required for 
   - `onConfirm`: `() => Promise<void>` - Async function to execute the deletion.
 
 ### `HabitCard.svelte` (Modified)
+
 - **Description:** Represents a single habit. Needs a way to trigger the delete action.
 - **Main Elements:**
   - Existing elements (Title, Streak, Checkbox).
@@ -49,6 +54,7 @@ The following structure highlights the new and modified components required for 
   - `onEdit`: `(habit: HabitWithStats) => void` (Existing/Implied).
 
 ### `HabitList.svelte` (Modified)
+
 - **Description:** Renders the list of `HabitCard` components.
 - **Main Elements:**
   - Iteration block (`#each`).
@@ -57,6 +63,7 @@ The following structure highlights the new and modified components required for 
   - `onDeleteHabit`: `(id: string) => void` **(New)** - Passes the delete event from card to dashboard.
 
 ### `src/routes/(app)/dashboard/+page.svelte` (Modified)
+
 - **Description:** The main dashboard page acting as the state manager.
 - **State:**
   - `showDeleteModal`: boolean ($state).
@@ -68,14 +75,16 @@ The following structure highlights the new and modified components required for 
 ## 5. Types
 
 ### Required DTOs
+
 No new DTOs are required. We will use the existing `HabitWithStats` or `Habit` type defined in `$lib/data-access/types.ts`.
 
 ### View Models
+
 - **DeleteTarget:** Simple object/reference to track which habit is being deleted.
   ```typescript
   {
-      id: string;
-      title: string;
+  	id: string;
+  	title: string;
   }
   ```
 
@@ -90,18 +99,21 @@ State is managed locally in `dashboard/+page.svelte` using Svelte 5 Runes.
 ## 7. API Integration
 
 ### Endpoint
+
 - **URL:** `/rest/v1/habits`
 - **Method:** `DELETE`
 - **Query Param:** `id=eq.{uuid}`
 
 ### Request
+
 ```typescript
 await fetch(`/rest/v1/habits?id=eq.${habitToDelete.id}`, {
-    method: 'DELETE'
+	method: 'DELETE'
 });
 ```
 
 ### Response
+
 - **204 No Content:** Success.
 - **4xx/5xx:** Error.
 

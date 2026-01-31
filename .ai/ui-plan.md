@@ -63,27 +63,27 @@ The HabitFlow User Interface is designed as a **Mobile-First Progressive Web App
 #### Modals (Overlay Views)
 
 1. **Create Habit Modal**
-    - **Trigger:** `CreateHabitFAB` or Empty State CTA.
-    - **Purpose:** distinct input interface to define a new goal.
-    - **Elements:** Title Input (focused on open), "Cancel" and "Save" buttons.
+   - **Trigger:** `CreateHabitFAB` or Empty State CTA.
+   - **Purpose:** distinct input interface to define a new goal.
+   - **Elements:** Title Input (focused on open), "Cancel" and "Save" buttons.
 
 2. **Edit Habit Modal**
-    - **Trigger:** "Rename" option in `HabitCard` menu.
-    - **Purpose:** Rename an existing habit.
-    - **Elements:** Title Input (pre-filled), "Cancel" and "Save" buttons.
+   - **Trigger:** "Rename" option in `HabitCard` menu.
+   - **Purpose:** Rename an existing habit.
+   - **Elements:** Title Input (pre-filled), "Cancel" and "Save" buttons.
 
 3. Delete Habit Modal
-    - **Trigger:** "Delete" option in `HabitCard` menu.
-    - **Purpose:** Delete an existing habit.
-    - **Elements:** Title, Confirmation message, "Cancel" and "Confirm" buttons.
+   - **Trigger:** "Delete" option in `HabitCard` menu.
+   - **Purpose:** Delete an existing habit.
+   - **Elements:** Title, Confirmation message, "Cancel" and "Confirm" buttons.
 
 4. **Settings Modal**
-    - **Trigger:** User Avatar Dropdown -> "Settings".
-    - **Purpose:** Account management and Danger Zone.
-    - **Elements:**
-      - User Email display (readonly).
-      - **Danger Zone:** "Delete Account" button (Red).
-    - **Security:** Account deletion requires a secondary confirmation prompt (e.g., "Are you sure?").
+   - **Trigger:** User Avatar Dropdown -> "Settings".
+   - **Purpose:** Account management and Danger Zone.
+   - **Elements:**
+     - User Email display (readonly).
+     - **Danger Zone:** "Delete Account" button (Red).
+   - **Security:** Account deletion requires a secondary confirmation prompt (e.g., "Are you sure?").
 
 ## 3. User Journey Map
 
@@ -91,15 +91,15 @@ The HabitFlow User Interface is designed as a **Mobile-First Progressive Web App
 
 1. **Authentication:** User logs in and is redirected to the Dashboard.
 2. **Date Verification:**
-    - App calculates `LogicalDate` (Current Time - 3 Hours).
-    - App fetches data via `get_habits_with_stats(target_date: LogicalDate)`.
+   - App calculates `LogicalDate` (Current Time - 3 Hours).
+   - App fetches data via `get_habits_with_stats(target_date: LogicalDate)`.
 3. **Assessment:** User sees the `DailyProgressBar` (e.g., 0%) and a list of neutral-colored habit cards.
 4. **Action:** User clicks the Checkbox/Button on a `HabitCard`.
-    - **State:** Button shows a generic loading spinner.
-    - **API:** `POST /habit_completions`.
+   - **State:** Button shows a generic loading spinner.
+   - **API:** `POST /habit_completions`.
 5. **Reward:**
-    - On Success: Spinner disappears. Card background transitions to **Vibrant Emerald**. Check icon animates in. Streak count increments.
-    - **Feedback:** `DailyProgressBar` animates to new percentage (e.g., 20%).
+   - On Success: Spinner disappears. Card background transitions to **Vibrant Emerald**. Check icon animates in. Streak count increments.
+   - **Feedback:** `DailyProgressBar` animates to new percentage (e.g., 20%).
 
 ### Secondary Flow: Creating a Habit
 
@@ -111,12 +111,12 @@ The HabitFlow User Interface is designed as a **Mobile-First Progressive Web App
 ### Edge Case: The "Night Owl" (3 AM Rule)
 
 1. User opens app at **2:50 AM** on Tuesday.
-    - Logical Date is **Monday**.
-    - User sees Monday's habits.
+   - Logical Date is **Monday**.
+   - User sees Monday's habits.
 2. User leaves app open. Clock hits **3:01 AM**.
-    - **Client Timer:** Detects logical day rollover.
-    - **Action:** Triggers `invalidateAll()` / Data Refresh.
-    - **Result:** Dashboard refreshes to show **Tuesday** (Logical Date). All completions reset to empty.
+   - **Client Timer:** Detects logical day rollover.
+   - **Action:** Triggers `invalidateAll()` / Data Refresh.
+   - **Result:** Dashboard refreshes to show **Tuesday** (Logical Date). All completions reset to empty.
 
 ## 4. Layout and Navigation Structure
 
