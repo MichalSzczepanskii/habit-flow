@@ -181,6 +181,7 @@
 		<button
 			class="btn mt-4 btn-block border-2 btn-outline btn-primary"
 			onclick={() => (isCreateModalOpen = true)}
+			data-test-id="create-new-habit-btn"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"

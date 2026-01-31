@@ -33,6 +33,7 @@
 	class:text-white={isCompleted}
 	class:bg-base-200={!isCompleted}
 	class:text-base-content={!isCompleted}
+	data-test-id="habit-card"
 >
 	<div class="card-body flex-row items-center justify-between p-6">
 		<!-- Left: Status Icon & Title -->
@@ -51,6 +52,7 @@
 				aria-label={isCompleted
 					? `Mark ${habit.title} as incomplete`
 					: `Mark ${habit.title} as complete`}
+				data-test-id="habit-toggle-btn"
 			>
 				{#if isToggling}
 					<span class="loading loading-md loading-spinner"></span>
@@ -75,6 +77,7 @@
 				class="truncate text-xl font-semibold transition-colors"
 				class:line-through={isCompleted}
 				class:opacity-90={isCompleted}
+				data-test-id="habit-title"
 			>
 				{habit.title}
 			</h3>
@@ -114,6 +117,7 @@
 					class:hover:bg-white={isCompleted}
 					class:hover:bg-opacity-20={isCompleted}
 					aria-label="Habit options"
+					data-test-id="habit-options-btn"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +140,7 @@
 					class="dropdown-content menu z-[1] w-52 rounded-box border border-base-content/25 bg-base-100 p-2 text-base-content shadow-xl"
 				>
 					<li>
-						<button onclick={() => onedit?.(habit)}>
+						<button onclick={() => onedit?.(habit)} data-test-id="habit-rename-btn">
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
@@ -155,7 +159,11 @@
 						</button>
 					</li>
 					<li>
-						<button class="text-error" onclick={() => ondelete?.(habit.id)}>
+						<button
+							class="text-error"
+							onclick={() => ondelete?.(habit.id)}
+							data-test-id="habit-delete-btn"
+						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"

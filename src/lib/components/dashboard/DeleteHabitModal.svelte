@@ -29,7 +29,7 @@
 	}
 </script>
 
-<dialog class="modal modal-bottom sm:modal-middle" class:modal-open={isOpen}>
+<dialog class="modal modal-bottom sm:modal-middle" class:modal-open={isOpen} data-test-id="delete-habit-modal">
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">Delete Habit</h3>
 		<p class="py-4">
@@ -39,7 +39,13 @@
 		<div class="modal-action">
 			<form method="dialog" class="flex gap-2">
 				<!-- If there is a button in form, it will close the modal -->
-				<button class="btn btn-ghost" type="button" onclick={handleClose} disabled={isSubmitting}>
+				<button
+					class="btn btn-ghost"
+					type="button"
+					onclick={handleClose}
+					disabled={isSubmitting}
+					data-test-id="delete-habit-cancel-btn"
+				>
 					Cancel
 				</button>
 				<button
@@ -47,6 +53,7 @@
 					type="button"
 					onclick={handleConfirm}
 					disabled={isSubmitting}
+					data-test-id="delete-habit-confirm-btn"
 				>
 					{#if isSubmitting}
 						<span class="loading loading-spinner"></span>

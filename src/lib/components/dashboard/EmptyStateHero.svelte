@@ -25,5 +25,7 @@
 	<p class="mb-6 max-w-xs text-base text-base-content/70">
 		You don't have any habits for this day yet.
 	</p>
-	<button class="btn btn-primary" {onclick}> Add your first habit </button>
+	<button class="btn btn-primary" {onclick} data-test-id="create-first-habit-btn">
+		Add your first habit
+	</button>
 </div>

@@ -64,6 +64,7 @@
 	class="modal modal-bottom sm:modal-middle"
 	onclose={handleClose}
 	oncancel={handleClose}
+	data-test-id="create-habit-modal"
 >
 	<div class="relative modal-box">
 		<button
@@ -91,6 +92,7 @@
 					class="input-bordered input w-full input-primary"
 					bind:value={title}
 					disabled={isLoading}
+					data-test-id="habit-title-input"
 				/>
 				{#if error}
 					<div class="label">
@@ -100,13 +102,20 @@
 			</div>
 
 			<div class="modal-action">
-				<button type="button" class="btn btn-ghost" onclick={handleClose} disabled={isLoading}>
+				<button
+					type="button"
+					class="btn btn-ghost"
+					onclick={handleClose}
+					disabled={isLoading}
+					data-test-id="cancel-habit-btn"
+				>
 					Cancel
 				</button>
 				<button
 					type="submit"
 					class="btn min-w-[100px] btn-primary"
 					disabled={isLoading || !title.trim()}
+					data-test-id="save-habit-btn"
 				>
 					{#if isLoading}
 						<span class="loading loading-sm loading-spinner"></span>
