@@ -19,6 +19,9 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup
 
+      - name: Create .env file
+        run: cp .env.example .env
+
       - name: Lint
         run: npm run lint
 
@@ -51,6 +54,9 @@ jobs:
 
       - name: Setup Environment
         uses: ./.github/actions/setup
+
+      - name: Create .env file
+        run: cp .env.example .env
 
       - name: Build
         run: npm run build
