@@ -106,11 +106,11 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            
+
             const lintStatus = '${{ needs.lint.result }}';
             const unitStatus = '${{ needs.unit-test.result }}';
             const e2eStatus = '${{ needs.e2e-test.result }}';
-            
+
             let coverage = 'N/A';
             try {
               if (fs.existsSync('coverage/coverage-summary.json')) {
@@ -126,17 +126,17 @@ jobs:
             const title = isSuccess ? 'Validation Successful' : 'Validation Failed';
 
             const body = `${statusIcon} **${title}**
-            
+
             | Check | Status |
             |-------|--------|
             | Lint & Check | ${lintStatus === 'success' ? '✅ Pass' : '❌ Fail'} |
             | Unit Tests | ${unitStatus === 'success' ? '✅ Pass' : '❌ Fail'} |
             | E2E Tests | ${e2eStatus === 'success' ? '✅ Pass' : '❌ Fail'} |
             | **Coverage** | **${coverage}** |
-            
+
             <details>
             <summary>Details</summary>
-            
+
             - **Linting:** ${lintStatus}
             - **Unit Tests:** ${unitStatus}
             - **E2E Tests:** ${e2eStatus}

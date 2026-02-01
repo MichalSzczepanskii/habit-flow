@@ -1,5 +1,7 @@
 # HabitFlow
 
+[![Test & Build Main](https://github.com/MichalSzczepanskii/habit-flow/actions/workflows/main.yml/badge.svg)](https://github.com/MichalSzczepanskii/habit-flow/actions/workflows/main.yml)
+
 HabitFlow is a responsive web application designed to help users build and maintain daily habits through a streamlined, low-friction interface.
 
 The application focuses on the core mechanics of habit formation—consistency and visual progression—replacing tedious manual tracking with an automated system that calculates streaks and visualizes daily progress. Designed with a mobile-first philosophy, HabitFlow helps users overcome the "all-or-nothing" trap by implementing a unique 3:00 AM grace period for daily resets.
