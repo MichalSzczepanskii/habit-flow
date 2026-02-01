@@ -39,4 +39,3 @@ teardown('delete database', async () => {
 		throw error;
 	}
 });
-
