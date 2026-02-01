@@ -6,11 +6,13 @@
 	let {
 		habits,
 		onDeleteHabit,
-		onToggleHabit
+		onToggleHabit,
+		onUpdateHabit
 	}: {
 		habits: HabitWithStats[];
 		onDeleteHabit?: (id: string) => void;
 		onToggleHabit: (id: string) => Promise<void>;
+		onUpdateHabit: (id: string, title: string) => Promise<void>;
 	} = $props();
 
 	let editingHabit = $state<{ id: string; title: string } | null>(null);
@@ -27,26 +29,13 @@
 	}
 
 	async function handleSaveTitle(id: string, newTitle: string) {
-		const response = await fetch(`/rest/v1/habits?id=eq.${id}`, {
-			method: 'PATCH',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ title: newTitle })
-		});
-
-		if (!response.ok) {
-			throw new Error('Failed to update habit title');
+		try {
+			await onUpdateHabit(id, newTitle);
+			closeEditModal();
+		} catch (error) {
+			console.error('Failed to update habit title', error);
+			throw error; // Let modal handle error display if it could (but Modal handles its own try/catch around onSave? Wait EditHabitModal catches errors from onSave)
 		}
-
-		// Optimistic update / update local state
-		// Since 'habits' contains state proxies (from parent), we can mutate directly
-		const habit = habits.find((h) => h.id === id);
-		if (habit) {
-			habit.title = newTitle;
-		}
-
-		closeEditModal();
 	}
 </script>
 

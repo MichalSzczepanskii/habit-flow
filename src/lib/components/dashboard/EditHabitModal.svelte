@@ -103,7 +103,13 @@
 			</div>
 
 			<div class="modal-action">
-				<button type="button" class="btn btn-ghost" onclick={handleClose} disabled={isLoading} data-test-id="edit-habit-cancel-btn">
+				<button
+					type="button"
+					class="btn btn-ghost"
+					onclick={handleClose}
+					disabled={isLoading}
+					data-test-id="edit-habit-cancel-btn"
+				>
 					Cancel
 				</button>
 				<button

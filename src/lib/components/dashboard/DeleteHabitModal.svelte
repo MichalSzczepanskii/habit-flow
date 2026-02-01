@@ -29,7 +29,11 @@
 	}
 </script>
 
-<dialog class="modal modal-bottom sm:modal-middle" class:modal-open={isOpen} data-test-id="delete-habit-modal">
+<dialog
+	class="modal modal-bottom sm:modal-middle"
+	class:modal-open={isOpen}
+	data-test-id="delete-habit-modal"
+>
 	<div class="modal-box">
 		<h3 class="text-lg font-bold">Delete Habit</h3>
 		<p class="py-4">

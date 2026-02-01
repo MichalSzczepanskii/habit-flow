@@ -1,9 +1,7 @@
 <script lang="ts">
-	import type { Habit } from '$lib/data-access/types';
-
-	let { open = $bindable(false), onSuccess } = $props<{
+	let { open = $bindable(false), onSubmit } = $props<{
 		open: boolean;
-		onSuccess: (habit: Habit) => void;
+		onSubmit: (title: string) => Promise<void>;
 	}>();
 
 	let title = $state('');
@@ -34,25 +32,17 @@
 		error = null;
 
 		try {
-			const response = await fetch('/rest/v1/habits', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ title: title.trim() })
-			});
-
-			if (response.ok) {
-				const newHabit = await response.json();
-				onSuccess(newHabit);
-				open = false;
+			await onSubmit(title.trim());
+			open = false;
+		} catch (err) {
+			console.error(err);
+			if (err instanceof Error) {
+				error = err.message;
+			} else if (typeof err === 'object' && err !== null && 'message' in err) {
+				error = (err as { message: string }).message;
 			} else {
-				const data = await response.json();
-				error = data.message || 'Failed to create habit';
+				error = 'Failed to create habit';
 			}
-		} catch (e) {
-			console.error(e);
-			error = 'An unexpected error occurred';
 		} finally {
 			isLoading = false;
 		}
