@@ -8,6 +8,12 @@ export default defineConfig({
 
 	test: {
 		expect: { requireAssertions: true },
+		coverage: {
+			provider: 'v8',
+			reporter: ['text', 'lcov', 'json-summary'],
+			include: ['src/**/*.ts', 'src/**/*.svelte'],
+			exclude: ['src/**/*.spec.ts', 'src/**/*.test.ts', 'src/vitest-setup.ts']
+		},
 
 		projects: [
 			{
