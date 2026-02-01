@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import type { ActionData } from './$types';
 
 	let { form } = $props<{ form: ActionData }>();
@@ -66,7 +67,7 @@
 			required
 		/>
 		<label class="label">
-			<a href="/forgot-password" class="label-text-alt link link-primary link-hover"
+			<a href={resolve('/forgot-password')} class="label-text-alt link link-primary link-hover"
 				>Forgot password?</a
 			>
 		</label>
@@ -85,5 +86,7 @@
 <div class="divider">OR</div>
 
 <div class="text-center">
-	<p>Don't have an account? <a href="/register" class="link link-primary">Sign up</a></p>
+	<p>
+		Don't have an account? <a href={resolve('/register')} class="link link-primary">Sign up</a>
+	</p>
 </div>

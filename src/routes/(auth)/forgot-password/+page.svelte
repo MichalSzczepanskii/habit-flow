@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import type { ActionData } from './$types';
 
 	let { form } = $props<{ form: ActionData }>();
@@ -84,5 +85,5 @@
 </form>
 
 <div class="mt-4 text-center">
-	<a href="/login" class="link link-secondary">Back to Login</a>
+	<a href={resolve('/login')} class="link link-secondary">Back to Login</a>
 </div>

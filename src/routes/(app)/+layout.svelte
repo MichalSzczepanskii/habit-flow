@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	let { children, data } = $props();
 </script>
 
@@ -46,10 +47,10 @@
 						<li class="px-4 text-sm opacity-70">{data.user.email}</li>
 					{/if}
 					<!-- Navbar menu content here -->
-					<li><a href="/dashboard">Dashboard</a></li>
-					<li><a href="/settings">Settings</a></li>
+					<li><a href={resolve('/dashboard')}>Dashboard</a></li>
+					<li><a href={resolve('/settings')}>Settings</a></li>
 					<li>
-						<form action="/logout" method="POST">
+						<form action={resolve('/logout')} method="POST">
 							<button type="submit">Logout</button>
 						</form>
 					</li>
@@ -66,10 +67,10 @@
 				<li class="menu-title px-4">{data.user.email}</li>
 			{/if}
 			<!-- Sidebar content here -->
-			<li><a href="/dashboard">Dashboard</a></li>
-			<li><a href="/settings">Settings</a></li>
+			<li><a href={resolve('/dashboard')}>Dashboard</a></li>
+			<li><a href={resolve('/settings')}>Settings</a></li>
 			<li>
-				<form action="/logout" method="POST">
+				<form action={resolve('/logout')} method="POST">
 					<button type="submit">Logout</button>
 				</form>
 			</li>

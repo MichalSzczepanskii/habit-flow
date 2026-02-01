@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import type { ActionData } from './$types';
 
 	let { form } = $props<{ form: ActionData }>();
@@ -96,5 +97,5 @@
 <div class="divider">OR</div>
 
 <div class="text-center">
-	<p>Already have an account? <a href="/login" class="link link-primary">Login</a></p>
+	<p>Already have an account? <a href={resolve('/login')} class="link link-primary">Login</a></p>
 </div>
