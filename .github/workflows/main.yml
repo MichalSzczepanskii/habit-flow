@@ -1,0 +1,50 @@
+name: Test & Build Main
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: E2E
+    steps:
+      - name: Setup Environment
+        uses: ./.github/actions/setup
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type Check
+        run: npm run check
+
+      - name: Unit Tests
+        run: npm run test:unit -- --run
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: E2E Tests
+        env:
+          PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+          E2E_USERNAME: ${{ secrets.USERNAME }}
+          E2E_PASSWORD: ${{ secrets.PASSWORD }}
+          E2E_USERNAME_ID: ${{ secrets.USERNAME_ID }}
+        run: npm run test:e2e
+
+  build:
+    name: Build
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Setup Environment
+        uses: ./.github/actions/setup
+
+      - name: Build
+        run: npm run build
