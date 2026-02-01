@@ -86,6 +86,7 @@ export type Database = {
 			[_ in never]: never;
 		};
 		Functions: {
+			delete_user: { Args: never; Returns: undefined };
 			get_habits_with_stats: {
 				Args: { target_date: string };
 				Returns: {

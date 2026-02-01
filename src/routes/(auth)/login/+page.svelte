@@ -66,11 +66,11 @@
 			class="input-bordered input input-primary"
 			required
 		/>
-		<label class="label">
+		<div class="label">
 			<a href={resolve('/forgot-password')} class="label-text-alt link link-primary link-hover"
 				>Forgot password?</a
 			>
-		</label>
+		</div>
 	</div>
 
 	<div class="form-control mt-6">

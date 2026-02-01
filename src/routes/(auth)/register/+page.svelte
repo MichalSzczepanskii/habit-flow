@@ -66,9 +66,9 @@
 			required
 			minlength="6"
 		/>
-		<label class="label">
+		<div class="label">
 			<span class="label-text-alt">Must be at least 6 characters</span>
-		</label>
+		</div>
 	</div>
 
 	<div class="form-control">
